@@ -1,20 +1,12 @@
 <?php
 require_once(__DIR__.'/config/config.php');
 require_once(__DIR__.'/function/SQL-function/sql.php');
-require_once(__DIR__.'/function/php-graph-sdk/src/Facebook/autoload.php');
-
-$fb = new Facebook\Facebook([
-	'app_id'=>$cfg['app_id'],
-	'app_secret'=>$cfg['app_secret'],
-	'default_graph_version'=>'v2.7',
-]);
 
 $method = $_SERVER['REQUEST_METHOD'];
 if ($method == 'GET' && $_GET['hub_mode'] == 'subscribe' &&  $_GET['hub_verify_token'] == $cfg['verify_token']) {
 	echo $_GET['hub_challenge'];
 } else if ($method == 'POST') {
 	$inputJSON = file_get_contents('php://input');
-	file_put_contents("log/".date("Y_m_d_H_i_s"), $inputJSON);
 	$input = json_decode($inputJSON, true);
 	$query = new query;
 	$query->table = 'area';
@@ -39,7 +31,6 @@ if ($method == 'GET' && $_GET['hub_mode'] == 'subscribe' &&  $_GET['hub_verify_t
 			$user_id = $messaging['sender']['id'];
 			if (isset($messaging['message']['quick_reply']) || isset($messaging['postback'])) {
 				$payload = $messaging['message']['quick_reply']['payload'] ?? $messaging['postback']['payload'];
-				file_put_contents("log/payload", $payload);
 				if ($payload == 'new') {
 					$messageData=array(
 						"recipient"=>array("id"=>$user_id),
@@ -53,6 +44,7 @@ if ($method == 'GET' && $_GET['hub_mode'] == 'subscribe' &&  $_GET['hub_verify_t
 					}
 				} else if ($payload == 'view') {
 					$query = new query;
+					$query->table = 'follow';
 					$query->where = array(
 						array('uid', $user_id)
 					);
@@ -67,6 +59,7 @@ if ($method == 'GET' && $_GET['hub_mode'] == 'subscribe' &&  $_GET['hub_verify_t
 					);
 				} else if (substr($payload, 0, 8) == "del_all") {
 					$query = new query;
+					$query->table = 'follow';
 					$query->where = array(
 						array('uid', $user_id)
 					);
@@ -83,6 +76,7 @@ if ($method == 'GET' && $_GET['hub_mode'] == 'subscribe' &&  $_GET['hub_verify_t
 				} else if (substr($payload, 0, 8) == "del_city") {
 					$city_code = substr($payload, 9);
 					$query = new query;
+					$query->table = 'follow';
 					$query->where = array(
 						array('uid', $user_id),
 						array('city', $city_code)
@@ -102,6 +96,7 @@ if ($method == 'GET' && $_GET['hub_mode'] == 'subscribe' &&  $_GET['hub_verify_t
 						)
 					);
 					$query = new query;
+					$query->table = 'follow';
 					$query->where = array(
 						array('uid', $user_id)
 					);
@@ -131,6 +126,7 @@ if ($method == 'GET' && $_GET['hub_mode'] == 'subscribe' &&  $_GET['hub_verify_t
 				} else if (substr($payload, 0, 8) == "new_city") {
 					$city_code = substr($payload, 9);
 					$query = new query;
+					$query->table = 'follow';
 					$query->value = array(
 						array('uid', $user_id),
 						array('city', $city_code),
@@ -154,7 +150,6 @@ if ($method == 'GET' && $_GET['hub_mode'] == 'subscribe' &&  $_GET['hub_verify_t
 				);
 			}
 			$commend = 'curl -X POST -H "Content-Type: application/json" -d \''.json_encode($messageData,JSON_HEX_APOS|JSON_HEX_QUOT).'\' "https://graph.facebook.com/v2.7/me/messages?access_token='.$cfg['page_token'].'"';
-			file_put_contents("log/commend", $commend);
 			system($commend);
 		}
 	}
