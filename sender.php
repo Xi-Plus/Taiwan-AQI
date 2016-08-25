@@ -16,6 +16,8 @@ foreach ($match[1] as $temp) {
 	$fetch[$temp->SiteKey]=$temp;
 }
 
+file_put_contents(__DIR__."/log/".date("Y_m_d_H_i_s")."_1.json", json_encode($fetch, JSON_UNESCAPED_UNICODE));
+
 $query = new query;
 $query->table = 'city';
 $city_list = $query->SELECT();
@@ -80,7 +82,7 @@ foreach ($result as $follow) {
 		@$messages[$follow['uid']] .= $data[$city]['name']." PSI ".$data[$city]['PSI']['value'].icon($data[$city]['PSI']['diff'])." ".$psilevelname[$data[$city]['PSI']['level']]."等級\n";
 	}
 	if ($data[$city]['PM25']['valid'] && $data[$city]['PM25']['level'] >= $cfg["PM25_over"]) {
-		@$messages[$follow['uid']] .= $data[$city]['name']." PM2.5 ".$data[$city]['PM25']['value'].icon($data[$city]['PSI']['diff'])." 第".$data[$city]['PM25']['level']."級 分類".$pm25levelname[$data[$city]['PM25']['level']]."\n";
+		@$messages[$follow['uid']] .= $data[$city]['name']." PM2.5 ".$data[$city]['PM25']['value'].icon($data[$city]['PM25']['diff'])." 第".$data[$city]['PM25']['level']."級 分類".$pm25levelname[$data[$city]['PM25']['level']]."\n";
 	}
 }
 
