@@ -16,8 +16,6 @@ foreach ($match[1] as $temp) {
 	$fetch[$temp->SiteKey]=$temp;
 }
 
-file_put_contents(__DIR__."/log/".date("Y_m_d_H_i_s")."_1.json", json_encode($fetch, JSON_UNESCAPED_UNICODE));
-
 $query = new query;
 $query->table = 'city';
 $city_list = $query->SELECT();

@@ -141,7 +141,7 @@ if ($method == 'GET' && $_GET['hub_mode'] == 'subscribe' &&  $_GET['hub_verify_t
 			} else if (isset($messaging['message'])) {
 				$messageData=array(
 					"recipient"=>array("id"=>$user_id),
-					"message"=>array("text"=>"get:".$messaging['message']['text'])
+					"message"=>array("text"=>"請點擊左下角選單進行設定")
 				);
 			} else {
 				$messageData=array(
