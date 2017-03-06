@@ -4,8 +4,10 @@ if (!in_array(PHP_SAPI, $C["allowsapi"])) {
 	exit("No permission");
 }
 
+require(__DIR__.'/function/log.php');
 require(__DIR__.'/function/getlist.php');
 
+$start = microtime(true);
 $time = date("Y-m-d H:i:s");
 
 $html = file_get_contents($C['fetch']);
@@ -45,4 +47,5 @@ for ($i=0; $i < count($m1[0]); $i++) {
 		$res = $sth->execute();
 	}
 }
-exec("php fbmessage.php > /dev/null 2>&1 &");
+exec("php ".__DIR__."/fbmessage.php > /dev/null 2>&1 &", $output);
+WriteLog("[fetch][info] runtime=".round((microtime(true)-$start), 6));
