@@ -199,6 +199,23 @@ foreach ($row as $data) {
 					}
 					break;
 				
+				case '/show':
+					$sth = $G["db"]->prepare("SELECT * FROM `{$C['DBTBprefix']}follow` WHERE `tmid` = :tmid");
+					$sth->bindValue(":tmid", $tmid);
+					$res = $sth->execute();
+					$row = $sth->fetchAll(PDO::FETCH_ASSOC);
+					if (count($row) == 0) {
+						SendMessage($tmid, $M["/list_zero"]);
+					} else {
+						require(__DIR__.'/function/level.php');
+						$msg = "";
+						foreach ($row as $follow) {
+							$msg .= $follow["city"]." AQI ".$D["city"][$follow["city"]]["PSI"]." ".PSIlevel($D["city"][$follow["city"]]["PSI"])."\n";
+						}
+						SendMessage($tmid, $msg);
+					}
+					break;
+				
 				case '/help':
 					SendMessage($tmid, $M["/help"]);
 					break;
