@@ -1,15 +1,14 @@
 <?php
+if (!in_array(PHP_SAPI, $C["allowsapi"])) {
+	exit("No permission");
+}
+
 require(__DIR__.'/config/config.php');
 require(__DIR__.'/function/log.php');
 require(__DIR__.'/function/curl.php');
 require(__DIR__.'/function/sendmessage.php');
 require(__DIR__.'/function/level.php');
 require(__DIR__.'/function/getlist.php');
-
-if (!in_array(PHP_SAPI, array("cli", "apache2handler"))) {
-	exit("No permission");
-}
-define("EOL", (PHP_SAPI==="apache2handler"?"<br>\n":PHP_EOL));
 
 $sth = $G["db"]->prepare("SELECT * FROM `{$C['DBTBprefix']}follow`");
 $sth->execute();

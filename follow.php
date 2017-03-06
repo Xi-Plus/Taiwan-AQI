@@ -1,16 +1,14 @@
 <?php
-if (!in_array(PHP_SAPI, array("cli", "apache2handler"))) {
+if (!in_array(PHP_SAPI, $C["allowsapi"])) {
 	exit("No permission");
 }
-define("EOL", (PHP_SAPI==="apache2handler"?"<br>\n":PHP_EOL));
 
 require(__DIR__.'/config/config.php');
 require(__DIR__.'/function/curl.php');
 require(__DIR__.'/function/log.php');
 require(__DIR__.'/function/sendmessage.php');
 require(__DIR__.'/function/getlist.php');
-var_dump($D["arealist"]);
-var_dump($D["citylist"]);
+
 $sth = $G["db"]->prepare("SELECT * FROM `{$C['DBTBprefix']}input` ORDER BY `time` ASC");
 $res = $sth->execute();
 $row = $sth->fetchAll(PDO::FETCH_ASSOC);

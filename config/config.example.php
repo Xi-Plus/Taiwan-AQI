@@ -14,6 +14,8 @@ $C['DBTBprefix'] = 'taiwan_psi_';
 
 $C['fetch'] = 'http://taqm.epa.gov.tw/taqm/tw/Aqi/Yun-Chia-Nan.aspx?type=all';
 
+$C["allowsapi"] = array("cli");
+
 $G["db"] = new PDO ('mysql:host='.$C["DBhost"].';dbname='.$C["DBname"].';charset=utf8', $C["DBuser"], $C["DBpass"]);
 
 $M["nottext"] = "僅接受文字訊息";

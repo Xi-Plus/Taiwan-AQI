@@ -1,8 +1,7 @@
 <?php
-if (!in_array(PHP_SAPI, array("cli", "apache2handler"))) {
+if (!in_array(PHP_SAPI, $C["allowsapi"])) {
 	exit("No permission");
 }
-define("EOL", (PHP_SAPI==="apache2handler"?"<br>\n":PHP_EOL));
 
 require(__DIR__.'/config/config.php');
 require(__DIR__.'/function/getlist.php');
