@@ -192,7 +192,8 @@ foreach ($row as $data) {
 							$msg .= $follow["city"]." ".$follow["level"]."\n";
 						}
 						$msg .= "\n".$M["/list_add_update"]."\n".
-							$M["/del"]."\n\n".
+							"範例： /add ".$row[0]["city"]." ".($row[0]["level"]+10)."\n".
+							$M["/del"]."\n".
 							"範例： /del ".$row[0]["city"];
 						SendMessage($tmid, $msg);
 					}
