@@ -18,7 +18,6 @@ preg_match_all("/labCO\">(.*)<\/span>/", $html, $m6);
 preg_match_all("/labSO2\">(.*)<\/span>/", $html, $m7);
 preg_match_all("/labNO2\">(.*)<\/span>/", $html, $m8);
 for ($i=0; $i < count($m1[0]); $i++) {
-	echo $m1[1][$i]." ".$m1[2][$i]." ".$m1[3][$i]." ".$m1[4][$i]." ".$m2[1][$i]." ".$m3[1][$i]." ".$m4[1][$i]." ".$m5[1][$i]." ".$m6[1][$i]." ".$m7[1][$i]." ".$m8[1][$i]."\n";
 	if (!isset($D["area_list"][$m1[1][$i]])) {
 		$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}area` (`area`) VALUES (:area)");
 		$sth->bindValue(":area", $m1[1][$i]);
