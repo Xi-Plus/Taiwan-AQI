@@ -20,7 +20,7 @@ foreach ($row as $data) {
 function GetTmid() {
 	global $C, $G;
 	$res = cURL($C['FBAPI']."me/conversations?fields=participants,updated_time&access_token=".$C['FBpagetoken']);
-	$updated_time = file_get_contents("updated_time.txt");
+	$updated_time = file_get_contents("data/updated_time.txt");
 	$newesttime = $updated_time;
 	while (true) {
 		if ($res === false) {
@@ -51,7 +51,7 @@ function GetTmid() {
 		}
 		$res = cURL($res["paging"]["next"]);
 	}
-	file_put_contents("updated_time.txt", $newesttime);
+	file_put_contents("data/updated_time.txt", $newesttime);
 }
 foreach ($row as $data) {
 	$input = json_decode($data["input"], true);
