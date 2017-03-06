@@ -59,7 +59,6 @@ foreach ($row as $data) {
 		foreach ($entry['messaging'] as $messaging) {
 			$mmid = "m_".$messaging['message']['mid'];
 			$res = cURL($C['FBAPI'].$mmid."?fields=from&access_token=".$C['FBpagetoken']);
-			WriteLog($res);
 			$res = json_decode($res, true);
 			$uid = $res["from"]["id"];
 
