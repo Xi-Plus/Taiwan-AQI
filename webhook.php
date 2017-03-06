@@ -1,8 +1,9 @@
 <?php
-$start = microtime(true);
-date_default_timezone_set("Asia/Taipei");
 require(__DIR__.'/config/config.php');
 require(__DIR__.'/function/log.php');
+date_default_timezone_set("Asia/Taipei");
+
+$start = microtime(true);
 
 $method = $_SERVER['REQUEST_METHOD'];
 if ($method == 'GET' && $_GET['hub_mode'] == 'subscribe' &&  $_GET['hub_verify_token'] == $C['FBWHtoken']) {

@@ -1,9 +1,9 @@
 <?php
+require(__DIR__.'/config/config.php');
 if (!in_array(PHP_SAPI, $C["allowsapi"])) {
 	exit("No permission");
 }
 
-require(__DIR__.'/config/config.php');
 require(__DIR__.'/function/getlist.php');
 
 $time = date("Y-m-d H:i:s");

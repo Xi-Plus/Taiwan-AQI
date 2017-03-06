@@ -1,9 +1,9 @@
 <?php
+require(__DIR__.'/config/config.php');
 if (!in_array(PHP_SAPI, $C["allowsapi"])) {
 	exit("No permission");
 }
 
-require(__DIR__.'/config/config.php');
 require(__DIR__.'/function/curl.php');
 require(__DIR__.'/function/log.php');
 require(__DIR__.'/function/sendmessage.php');
@@ -122,11 +122,12 @@ foreach ($row as $data) {
 						$res = $sth->execute();
 						$row = $sth->fetch(PDO::FETCH_ASSOC);
 						if ($row === false) {
-							$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}follow` (`tmid`, `city`, `level`) VALUES (:cmid, :city, :level)");
+							$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}follow` (`tmid`, `city`, `level`) VALUES (:tmid, :city, :level)");
 							$sth->bindValue(":tmid", $tmid);
 							$sth->bindValue(":city", $cmd[1]);
 							$sth->bindValue(":level", $level);
 							$res = $sth->execute();
+							WriteLog(json_encode($res));
 							SendMessage($tmid, "已開始接收".$cmd[1]."測站的通知，當AQI超過".$level."時會通知");
 						} else {
 							$sth = $G["db"]->prepare("UPDATE `{$C['DBTBprefix']}follow` SET `level` = :level WHERE `tmid` = :tmid AND `city` = :city");
