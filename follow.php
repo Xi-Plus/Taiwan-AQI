@@ -183,18 +183,17 @@ foreach ($row as $data) {
 					$sth->bindValue(":tmid", $tmid);
 					$res = $sth->execute();
 					$row = $sth->fetchAll(PDO::FETCH_ASSOC);
-					$follow = array();
-					foreach ($row as $temp) {
-						$follow []= $temp["city"];
-					}
 
-					if (count($follow) == 0) {
+					if (count($row) == 0) {
 						SendMessage($tmid, $M["/list_zero"]);
 					} else {
-						$msg = $M["/list"]."\n".
-							implode("、", $follow)."\n\n".
+						$msg = $M["/list"]."\n";
+						foreach ($row as $follow) {
+							$msg .= $follow["city"]." ".$follow["level"]."\n";
+						}
+						$msg .= "\n".$M["/list_add_update"]."\n".
 							$M["/del"]."\n\n".
-							"範例： /del ".$follow[0];
+							"範例： /del ".$row[0]["city"];
 						SendMessage($tmid, $msg);
 					}
 					break;
