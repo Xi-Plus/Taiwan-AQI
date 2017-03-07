@@ -7,131 +7,64 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 
-CREATE TABLE `area` (
-  `no` int(11) NOT NULL,
-  `area` varchar(5) NOT NULL,
-  `name` varchar(10) NOT NULL
+CREATE TABLE `taiwan_aqi_area` (
+  `no` tinyint(4) NOT NULL DEFAULT '0',
+  `area` varchar(20) NOT NULL,
+  `name` varchar(10) NOT NULL DEFAULT '未分類'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `area` (`no`, `area`, `name`) VALUES
-(5, 'CT', '彰投'),
-(10, 'EO', '宜東離島'),
-(8, 'K', '原高市'),
-(9, 'KP', '原高屏'),
-(4, 'MC', '苗中'),
-(7, 'N', '臺南'),
-(2, 'NTP', '新北'),
-(3, 'TC', '桃竹'),
-(1, 'TPK', '基北'),
-(6, 'YC', '雲嘉');
-
-CREATE TABLE `city` (
-  `area` varchar(5) NOT NULL,
-  `city` varchar(15) NOT NULL,
+CREATE TABLE `taiwan_aqi_city` (
+  `area` varchar(20) NOT NULL,
   `name` varchar(10) NOT NULL,
-  `PSI` tinyint(4) NOT NULL,
-  `PSItime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `PM25` tinyint(4) NOT NULL,
-  `PM25time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `PSI` varchar(5) NOT NULL DEFAULT '',
+  `O3` varchar(5) NOT NULL DEFAULT '',
+  `PM25` varchar(5) NOT NULL DEFAULT '',
+  `PM10` varchar(5) NOT NULL DEFAULT '',
+  `CO` varchar(5) NOT NULL DEFAULT '',
+  `SO2` varchar(5) NOT NULL DEFAULT '',
+  `NO2` varchar(5) NOT NULL DEFAULT '',
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `city` (`area`, `city`, `name`, `PSI`, `PSItime`, `PM25`, `PM25time`) VALUES
-('N', 'Annan', '安南', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('NTP', 'Banqiao', '板橋', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('NTP', 'Cailiao', '菜寮', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('CT', 'Car1', '彰化(芬園)', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('CT', 'Car2', '彰化(花壇)', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('CT', 'Car3', '彰化(交通)', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('CT', 'Car4', '彰化(國聖)', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('CT', 'Changhua', '彰化', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('KP', 'Chaozhou', '潮州', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('YC', 'Chiayi', '嘉義', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('MC', 'Dali', '大里', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('KP', 'Daliao', '大寮', 0, '2016-08-24 10:12:22', 0, '2016-08-24 10:12:22'),
-('TPK', 'Datong', '大同', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('TC', 'Dayuan', '大園', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('EO', 'Dongshan', '冬山', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('YC', 'Douliu', '斗六', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('CT', 'Erlin', '二林', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('KP', 'Fengshan', '鳳山', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('MC', 'Fengyuan', '豐原', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('K', 'Fuxing', '復興', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('EO', 'Guanshan', '關山', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('TC', 'Guanyin', '觀音', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('TPK', 'Guting', '古亭', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('KP', 'Hengchun', '恆春', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('TC', 'Hsinchu', '新竹', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('EO', 'Hualien', '花蓮', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('TC', 'Hukou', '湖口', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('TPK', 'Keelung', '基隆', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('EO', 'Kinmen', '金門', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('NTP', 'Linkou', '林口', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('KP', 'Linyuan', '林園', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('TC', 'Longtan', '龍潭', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('YC', 'Lunbei', '崙背', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('EO', 'Magong', '馬公', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('YC', 'Mailiao', '麥寮', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('EO', 'Matsu', '馬祖', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('KP', 'Meinong', '美濃', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('MC', 'Miaoli', '苗栗', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('CT', 'Nantou', '南投', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('K', 'Nanzi', '楠梓', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('KP', 'Pingtung', '屏東', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('TC', 'Pingzhen', '平鎮', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('CT', 'Puli', '埔里', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('YC', 'Puzi', '朴子', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('K', 'Qianjin', '前金', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('K', 'Qianzhen', '前鎮', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('KP', 'Qiaotou', '橋頭', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('K', 'Renwu', '仁武', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('NTP', 'Sanchong', '三重', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('MC', 'Sanyi', '三義', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('MC', 'Shalu', '沙鹿', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('N', 'Shanhua', '善化', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('TPK', 'Shilin', '士林', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('TPK', 'Songshan', '松山', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('N', 'Tainan', '臺南', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('EO', 'Taitung', '臺東', 0, '2016-08-24 10:12:22', 0, '2016-08-24 10:12:22'),
-('YC', 'Taixi', '臺西', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('NTP', 'Tamsui', '淡水', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('TC', 'Taoyuan', '桃園', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('MC', 'Toufen', '頭份', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('NTP', 'Tucheng', '土城', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('TPK', 'Wanhua', '萬華', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('NTP', 'Wanli', '萬里', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('CT', 'Xianxi', '線西', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('K', 'Xiaogang', '小港', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('NTP', 'Xindian', '新店', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('YC', 'Xingang', '新港', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('N', 'Xinying', '新營', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('NTP', 'Xinzhuang', '新莊', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('MC', 'Xitun', '西屯', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('TPK', 'Xizhi', '汐止', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('TPK', 'Yangming', '陽明', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('EO', 'Yilan', '宜蘭', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('NTP', 'Yonghe', '永和', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('TC', 'Zhongli', '中壢', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('MC', 'Zhongming', '忠明', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('TPK', 'Zhongshan', '中山', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('TC', 'Zhudong', '竹東', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('CT', 'Zhushan', '竹山', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00'),
-('K', 'Zuoying', '左營', 0, '2016-08-24 00:00:00', 0, '2016-08-24 00:00:00');
-
-CREATE TABLE `follow` (
-  `uid` varchar(20) NOT NULL,
+CREATE TABLE `taiwan_aqi_follow` (
+  `tmid` varchar(50) NOT NULL,
   `city` varchar(15) NOT NULL,
+  `level` smallint(6) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `taiwan_aqi_input` (
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `input` text NOT NULL,
   `hash` varchar(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `taiwan_aqi_log` (
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `message` text NOT NULL,
+  `hash` varchar(32) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE `area`
+CREATE TABLE `taiwan_aqi_user` (
+  `uid` varchar(25) NOT NULL,
+  `tmid` varchar(50) NOT NULL,
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `taiwan_aqi_area`
   ADD UNIQUE KEY `area` (`area`);
 
-ALTER TABLE `city`
-  ADD UNIQUE KEY `city` (`city`);
+ALTER TABLE `taiwan_aqi_city`
+  ADD UNIQUE KEY `name` (`name`);
 
-ALTER TABLE `follow`
+ALTER TABLE `taiwan_aqi_input`
   ADD UNIQUE KEY `hash` (`hash`);
+
+ALTER TABLE `taiwan_aqi_log`
+  ADD UNIQUE KEY `hash` (`hash`);
+
+ALTER TABLE `taiwan_aqi_user`
+  ADD UNIQUE KEY `tmid` (`tmid`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
