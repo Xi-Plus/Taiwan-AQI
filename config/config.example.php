@@ -10,7 +10,7 @@ $C["DBhost"] = 'localhost';
 $C['DBname'] = 'dbname';
 $C['DBuser'] = 'user';
 $C['DBpass'] = 'pass';
-$C['DBTBprefix'] = 'taiwan_psi_';
+$C['DBTBprefix'] = 'taiwan_aqi_';
 
 $C['fetch'] = 'http://taqm.epa.gov.tw/taqm/tw/Aqi/Yun-Chia-Nan.aspx?type=all';
 
