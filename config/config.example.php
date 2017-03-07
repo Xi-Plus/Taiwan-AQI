@@ -37,7 +37,9 @@ $M["/add_level_notnum"] = "第2個參數錯誤\n".
 $M["/add_too_many_arg"] = "參數個數錯誤\n".
 	"必須提供1個或2個參數，第1個為測站，第2個為AQI指數";
 $M["/add_arealist"] = "輸入 /add [區域] 顯示此區域所有的測站";
-$M["/add_area_notfound"] = "找不到此區域或測站";
+$M["/add_citylist"] = "輸入 /add [測站] 接收此測站通知\n".
+	"輸入 /add [測站] [門檻值] 可自訂通知門檻值";
+$M["/add_notfound"] = "找不到此區域或測站";
 $M["/list"] = "已接收以下測站";
 $M["/list_zero"] = "沒有接收任何測站\n".
 	"輸入 /add [測站] 開始接收測站通知";

@@ -112,8 +112,7 @@ foreach ($row as $data) {
 						break;
 					}
 					if (in_array($cmd[1], $D["arealist"])) {
-						SendMessage($tmid, $M["/add_arealist"]);
-						SendMessage($tmid, "可用的測站有：".implode("、", $D["citylist"][$cmd[1]])."\n\n範例: /add ".$D["citylist"][$cmd[1]][0]);
+						SendMessage($tmid, $M["/add_citylist"]."\n\n可用的測站有：".implode("、", $D["citylist"][$cmd[1]])."\n\n範例: /add ".$D["citylist"][$cmd[1]][0]);
 					} else if (isset($D["city"][$cmd[1]])) {
 						$sth = $G["db"]->prepare("SELECT * FROM `{$C['DBTBprefix']}follow` WHERE `tmid` = :tmid AND `city` = :city LIMIT 1");
 						$sth->bindValue(":tmid", $tmid);
@@ -137,7 +136,7 @@ foreach ($row as $data) {
 							SendMessage($tmid, "已經".$cmd[1]."測站的通知的門檻值改成".$level);
 						}
 					} else {
-						$msg = $M["/add_area_notfound"]."\n".
+						$msg = $M["/add_notfound"]."\n".
 							$M["/add_arealist"]."\n\n".
 							"可用的區域有：".implode("、", $D["arealist"])."\n\n".
 							"範例： /add ".$D["arealist"][0];
