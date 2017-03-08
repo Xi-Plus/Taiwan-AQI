@@ -12,7 +12,7 @@ $time = date("Y-m-d H:i:s");
 
 $html = file_get_contents($C['fetch']);
 preg_match_all("/\/Aqi\/(.+?)\/(.+?)\.aspx\">\s*(.+?)\s*<small>\((.+?)\)<\/small>/", $html, $m1);
-preg_match_all("/labPSI\">(.*)<\/span>/", $html, $m2);
+preg_match_all("/labAQI\">(.*)<\/span>/", $html, $m2);
 preg_match_all("/labO3\">(.*)<\/span>/", $html, $m3);
 preg_match_all("/labPM25\">(.*)<\/span>/", $html, $m4);
 preg_match_all("/labPM10\">(.*)<\/span>/", $html, $m5);
@@ -34,8 +34,8 @@ for ($i=0; $i < count($m1[0]); $i++) {
 		$D["city_list"][$m1[3][$i]] = array();
 	}
 	if ($m2[1][$i] != "") {
-		$sth = $G["db"]->prepare("UPDATE `{$C['DBTBprefix']}city` SET `PSI` = :PSI, `O3` = :O3, `PM25` = :PM25, `PM10` = :PM10, `CO` = :CO, `SO2` = :SO2, `NO2` = :NO2, `time` = :time WHERE `name` = :name");
-		$sth->bindValue(":PSI", $m2[1][$i]);
+		$sth = $G["db"]->prepare("UPDATE `{$C['DBTBprefix']}city` SET `AQI` = :AQI, `O3` = :O3, `PM25` = :PM25, `PM10` = :PM10, `CO` = :CO, `SO2` = :SO2, `NO2` = :NO2, `time` = :time WHERE `name` = :name");
+		$sth->bindValue(":AQI", $m2[1][$i]);
 		$sth->bindValue(":O3", $m3[1][$i]);
 		$sth->bindValue(":PM25", $m4[1][$i]);
 		$sth->bindValue(":PM10", $m5[1][$i]);

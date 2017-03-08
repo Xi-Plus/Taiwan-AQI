@@ -18,8 +18,8 @@ foreach ($follows as $follow) {
 	if (!isset($msgs[$follow["tmid"]])) {
 		$msgs[$follow["tmid"]] = "";
 	}
-	if ($D["city"][$follow["city"]]["PSI"] > $follow["level"]) {
-		$msgs[$follow["tmid"]] .= $follow["city"]." AQI ".$D["city"][$follow["city"]]["PSI"]." ".PSIlevel($D["city"][$follow["city"]]["PSI"])."\n";
+	if ($D["city"][$follow["city"]]["AQI"] > $follow["level"]) {
+		$msgs[$follow["tmid"]] .= $follow["city"]." AQI ".$D["city"][$follow["city"]]["AQI"]." ".AQIlevel($D["city"][$follow["city"]]["AQI"])."\n";
 	}
 }
 foreach ($msgs as $tmid => $msg) {

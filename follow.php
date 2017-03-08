@@ -99,7 +99,7 @@ foreach ($row as $data) {
 						SendMessage($tmid, $msg);
 						break;
 					}
-					$level = $C["PSI_over"];
+					$level = $C["AQI_over"];
 					if (isset($cmd[2])) {
 						if (!ctype_digit($cmd[2])) {
 							SendMessage($tmid, $M["/add_level_notnum"]);
@@ -209,7 +209,7 @@ foreach ($row as $data) {
 						require(__DIR__.'/function/level.php');
 						$msg = "";
 						foreach ($row as $follow) {
-							$msg .= $follow["city"]." AQI ".$D["city"][$follow["city"]]["PSI"]." ".PSIlevel($D["city"][$follow["city"]]["PSI"])."\n";
+							$msg .= $follow["city"]." AQI ".$D["city"][$follow["city"]]["AQI"]." ".AQIlevel($D["city"][$follow["city"]]["AQI"])."\n";
 						}
 						SendMessage($tmid, $msg);
 					}

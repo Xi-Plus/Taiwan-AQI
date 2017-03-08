@@ -16,7 +16,7 @@ CREATE TABLE `taiwan_aqi_area` (
 CREATE TABLE `taiwan_aqi_city` (
   `area` varchar(20) NOT NULL,
   `name` varchar(10) NOT NULL,
-  `PSI` varchar(5) NOT NULL DEFAULT '',
+  `AQI` varchar(5) NOT NULL DEFAULT '',
   `O3` varchar(5) NOT NULL DEFAULT '',
   `PM25` varchar(5) NOT NULL DEFAULT '',
   `PM10` varchar(5) NOT NULL DEFAULT '',
