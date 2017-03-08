@@ -27,9 +27,21 @@ for ($i=0; $i < count($m1[0]); $i++) {
 		$D["area_list"][$m1[1][$i]] = array();
 	}
 	if (!isset($D["city_list"][$m1[3][$i]])) {
-		$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}city` (`area`, `name`) VALUES (:area, :name)");
+		$lat = "";
+		$long = "";
+		$html = file_get_contents("http://taqm.epa.gov.tw/taqm/tw/Site/".$m1[2][$i].".aspx");
+		if (preg_match("/北緯：(\d+?)度(\d+?)分(.+?)秒/", $html, $m)) {
+			$lat = round($m[1]+($m[2]/60)+($m[3]/3600), 6);
+		}
+		if (preg_match("/東經：(\d+?)度(\d+?)分(.+?)秒/", $html, $m)) {
+			$long = round($m[1]+($m[2]/60)+($m[3]/3600), 6);
+		}
+		$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}city` (`area`, `enname`, `name`, `lat`, `long`) VALUES (:area, :enname, :name, :lat, :long)");
 		$sth->bindValue(":area", $m1[1][$i]);
+		$sth->bindValue(":enname", $m1[2][$i]);
 		$sth->bindValue(":name", $m1[3][$i]);
+		$sth->bindValue(":lat", $lat);
+		$sth->bindValue(":long", $long);
 		$res = $sth->execute();
 		$D["city_list"][$m1[3][$i]] = array();
 	}

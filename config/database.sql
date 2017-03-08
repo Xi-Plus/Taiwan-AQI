@@ -15,6 +15,7 @@ CREATE TABLE `taiwan_aqi_area` (
 
 CREATE TABLE `taiwan_aqi_city` (
   `area` varchar(20) NOT NULL,
+  `enname` varchar(20) NOT NULL,
   `name` varchar(10) NOT NULL,
   `AQI` varchar(5) NOT NULL DEFAULT '',
   `O3` varchar(5) NOT NULL DEFAULT '',
@@ -23,6 +24,8 @@ CREATE TABLE `taiwan_aqi_city` (
   `CO` varchar(5) NOT NULL DEFAULT '',
   `SO2` varchar(5) NOT NULL DEFAULT '',
   `NO2` varchar(5) NOT NULL DEFAULT '',
+  `lat` varchar(10) NOT NULL,
+  `long` varchar(10) NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

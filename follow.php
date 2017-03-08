@@ -78,6 +78,31 @@ foreach ($row as $data) {
 				}
 			}
 			$tmid = $row["tmid"];
+			if (isset($messaging['message']['attachments']) && $messaging['message']['attachments'][0]['type'] == "location") {
+				$lat = $messaging['message']['attachments'][0]['payload']['coordinates']['lat'];
+				$long = $messaging['message']['attachments'][0]['payload']['coordinates']['long'];
+				$msg = "您的座標是經度".round($long, 3)." 緯度".round($lat, 3)."\n";
+				$closest = array("length"=>1e100, "lat"=>0, "long"=>0, "city"=>"");
+				require(__DIR__.'/function/gpsdist.php');
+				foreach ($D["city"] as $city) {
+					$tl = gpsdist($lat, $long, $city["lat"], $city["long"]);
+					if ($tl < $closest["length"]) {
+						$closest = array("length"=>$tl, "lat"=>$city["lat"], "long"=>$city["long"], "city"=>$city["name"]);
+					}
+				}
+				$msg .= "離您最近的測站是 ".$closest["city"]."\n".
+					"測站座標是經度".round($closest["long"], 3)." 緯度".round($closest["lat"], 3)."\n";
+				if ($closest["length"] < 1000) {
+					$msg .= "距離是".round($closest["length"], 0)."公尺\n";
+				} else if ($closest["length"] < 100000) {
+					$msg .= "距離是".round($closest["length"]/1000, 1)."公里\n";
+				} else {
+					$msg .= "距離是".round($closest["length"]/1000, 0)."公里\n";
+				}
+				$msg .= "\n輸入 /add ".$closest["city"]." 以接收此測站通知";
+				SendMessage($tmid, $msg);
+				continue;
+			}
 			if (!isset($messaging['message']['text'])) {
 				SendMessage($tmid, $M["nottext"]);
 				continue;
