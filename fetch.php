@@ -12,7 +12,7 @@ $time = date("Y-m-d H:i:s");
 
 $html = file_get_contents($C['fetch']);
 preg_match_all("/\/Aqi\/(.+?)\/(.+?)\.aspx\">\s*(.+?)\s*<small>\((.+?)\)<\/small>/", $html, $m1);
-preg_match_all("/labAQI\">(.*)<\/span>/", $html, $m2);
+preg_match_all("/labPSI\">(.*)<\/span>/", $html, $m2);
 preg_match_all("/labO3\">(.*)<\/span>/", $html, $m3);
 preg_match_all("/labPM25\">(.*)<\/span>/", $html, $m4);
 preg_match_all("/labPM10\">(.*)<\/span>/", $html, $m5);
@@ -47,5 +47,5 @@ for ($i=0; $i < count($m1[0]); $i++) {
 		$res = $sth->execute();
 	}
 }
-exec("php ".__DIR__."/fbmessage.php > /dev/null 2>&1 &", $output);
+exec("php ".__DIR__."/fbmessage.php > /dev/null 2>&1 &");
 WriteLog("[fetch][info] runtime=".round((microtime(true)-$start), 6));

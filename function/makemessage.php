@@ -19,7 +19,6 @@ function MakeMessage($force=false, $tmid=null) {
 		return false;
 	}
 	foreach ($follows as $follow) {
-		var_dump($follow);
 		if (!$force) {
 			if ($D["city"][$follow["city"]]["AQI"] < $follow["level"] && $follow["lastAQI"] < $follow["level"]) {
 				continue;
@@ -35,7 +34,7 @@ function MakeMessage($force=false, $tmid=null) {
 		if ($diff > 0) {
 			$msg .= "已上升".$diff."達到 ".$D["city"][$follow["city"]]["AQI"];
 		} else if ($diff < 0) {
-			$msg .= "已下降".$diff."達到 ".$D["city"][$follow["city"]]["AQI"];
+			$msg .= "已下降".(-$diff)."達到 ".$D["city"][$follow["city"]]["AQI"];
 		} else {
 			$msg .= "仍然維持 ".$D["city"][$follow["city"]]["AQI"];
 		}
