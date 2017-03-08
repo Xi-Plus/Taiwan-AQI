@@ -29,7 +29,10 @@ CREATE TABLE `taiwan_aqi_city` (
 CREATE TABLE `taiwan_aqi_follow` (
   `tmid` varchar(50) NOT NULL,
   `city` varchar(15) NOT NULL,
-  `level` smallint(6) NOT NULL
+  `level` smallint(6) NOT NULL,
+  `diff` int(11) NOT NULL,
+  `lastAQI` int(11) NOT NULL,
+  `lastmsg` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `taiwan_aqi_input` (
