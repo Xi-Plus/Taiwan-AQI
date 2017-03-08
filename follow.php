@@ -99,7 +99,8 @@ foreach ($row as $data) {
 						SendMessage($tmid, $msg);
 						break;
 					}
-					$level = $C["AQI_over"];
+					$city = $cmd[1];
+					$level = $C["AQIover"];
 					if (isset($cmd[2])) {
 						if (!ctype_digit($cmd[2])) {
 							SendMessage($tmid, $M["/add_level_notnum"]);
@@ -107,33 +108,43 @@ foreach ($row as $data) {
 						}
 						$level = (int)$cmd[2];
 					}
+					$diff = $C["AQIdiff"];
 					if (isset($cmd[3])) {
+						if (!ctype_digit($cmd[3])) {
+							SendMessage($tmid, $M["/add_diff_notnum"]);
+							break;
+						}
+						$diff = (int)$cmd[3];
+					}
+					if (isset($cmd[4])) {
 						SendMessage($tmid, $M["/add_too_many_arg"]);
 						break;
 					}
-					if (in_array($cmd[1], $D["arealist"])) {
-						SendMessage($tmid, $M["/add_citylist"]."\n\n可用的測站有：".implode("、", $D["citylist"][$cmd[1]])."\n\n範例: /add ".$D["citylist"][$cmd[1]][0]);
-					} else if (isset($D["city"][$cmd[1]])) {
+					if (in_array($city, $D["arealist"])) {
+						SendMessage($tmid, $M["/add_citylist"]."\n\n可用的測站有：".implode("、", $D["citylist"][$city])."\n\n範例: /add ".$D["citylist"][$city][0]);
+					} else if (isset($D["city"][$city])) {
 						$sth = $G["db"]->prepare("SELECT * FROM `{$C['DBTBprefix']}follow` WHERE `tmid` = :tmid AND `city` = :city LIMIT 1");
 						$sth->bindValue(":tmid", $tmid);
-						$sth->bindValue(":city", $cmd[1]);
+						$sth->bindValue(":city", $city);
 						$res = $sth->execute();
 						$row = $sth->fetch(PDO::FETCH_ASSOC);
 						if ($row === false) {
-							$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}follow` (`tmid`, `city`, `level`) VALUES (:tmid, :city, :level)");
+							$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}follow` (`tmid`, `city`, `level`, `diff`, `lastAQI`) VALUES (:tmid, :city, :level, :diff, :lastAQI)");
 							$sth->bindValue(":tmid", $tmid);
-							$sth->bindValue(":city", $cmd[1]);
+							$sth->bindValue(":city", $city);
 							$sth->bindValue(":level", $level);
+							$sth->bindValue(":diff", $diff);
+							$sth->bindValue(":lastAQI", $D["city"][$city]["AQI"]);
 							$res = $sth->execute();
 							WriteLog(json_encode($res));
-							SendMessage($tmid, "已開始接收".$cmd[1]."測站的通知，當AQI超過".$level."時會通知");
+							SendMessage($tmid, "已開始接收".$city."測站的通知，當AQI達到".$level."且變化達到".$diff."時會通知\n目前的AQI是 ".$D["city"][$city]["AQI"]);
 						} else {
 							$sth = $G["db"]->prepare("UPDATE `{$C['DBTBprefix']}follow` SET `level` = :level WHERE `tmid` = :tmid AND `city` = :city");
 							$sth->bindValue(":tmid", $tmid);
-							$sth->bindValue(":city", $cmd[1]);
+							$sth->bindValue(":city", $city);
 							$sth->bindValue(":level", $level);
 							$res = $sth->execute();
-							SendMessage($tmid, "已經".$cmd[1]."測站的通知的門檻值改成".$level);
+							SendMessage($tmid, "已經".$city."測站的通知的門檻值改成".$level);
 						}
 					} else {
 						$msg = $M["/add_notfound"]."\n".
@@ -164,16 +175,17 @@ foreach ($row as $data) {
 						SendMessage($tmid, $msg);
 						break;
 					}
-					if (!isset($D["city"][$cmd[1]])) {
-						SendMessage($tmid, "找不到".$cmd[1]."測站");
-					} else if (in_array($cmd[1], $follow)) {
+					$city = $cmd[1];
+					if (!isset($D["city"][$city])) {
+						SendMessage($tmid, "找不到".$city."測站");
+					} else if (in_array($city, $follow)) {
 						$sth = $G["db"]->prepare("DELETE FROM `{$C['DBTBprefix']}follow` WHERE `tmid` = :tmid AND `city` = :city");
 						$sth->bindValue(":tmid", $tmid);
-						$sth->bindValue(":city", $cmd[1]);
+						$sth->bindValue(":city", $city);
 						$res = $sth->execute();
-						SendMessage($tmid, "已停止接收".$cmd[1]."測站的通知");
+						SendMessage($tmid, "已停止接收".$city."測站的通知");
 					} else {
-						SendMessage($tmid, "並沒有接收".$cmd[1]."測站的通知");
+						SendMessage($tmid, "並沒有接收".$city."測站的通知");
 					}
 					break;
 
@@ -199,19 +211,10 @@ foreach ($row as $data) {
 					break;
 				
 				case '/show':
-					$sth = $G["db"]->prepare("SELECT * FROM `{$C['DBTBprefix']}follow` WHERE `tmid` = :tmid");
-					$sth->bindValue(":tmid", $tmid);
-					$res = $sth->execute();
-					$row = $sth->fetchAll(PDO::FETCH_ASSOC);
-					if (count($row) == 0) {
+					require(__DIR__.'/function/level.php');
+					require(__DIR__.'/function/makemessage.php');
+					if (!makemessage(true, $tmid)) {
 						SendMessage($tmid, $M["/list_zero"]);
-					} else {
-						require(__DIR__.'/function/level.php');
-						$msg = "";
-						foreach ($row as $follow) {
-							$msg .= $follow["city"]." AQI ".$D["city"][$follow["city"]]["AQI"]." ".AQIlevel($D["city"][$follow["city"]]["AQI"])."\n";
-						}
-						SendMessage($tmid, $msg);
 					}
 					break;
 				
