@@ -81,25 +81,32 @@ foreach ($row as $data) {
 			if (isset($messaging['message']['attachments']) && $messaging['message']['attachments'][0]['type'] == "location") {
 				$lat = $messaging['message']['attachments'][0]['payload']['coordinates']['lat'];
 				$long = $messaging['message']['attachments'][0]['payload']['coordinates']['long'];
-				$msg = "您的座標是經度".round($long, 3)." 緯度".round($lat, 3)."\n";
+				$msg = "您的座標是".round(abs($long), 3)."°".($long>=0?"E":"W")." ".round(abs($lat), 3)."°".($lat>=0?"N":"S")."\n";
 				$closest = array("length"=>1e100, "lat"=>0, "long"=>0, "city"=>"");
 				require(__DIR__.'/function/gpsdist.php');
-				foreach ($D["city"] as $city) {
-					$tl = gpsdist($lat, $long, $city["lat"], $city["long"]);
-					if ($tl < $closest["length"]) {
-						$closest = array("length"=>$tl, "lat"=>$city["lat"], "long"=>$city["long"], "city"=>$city["name"]);
+				foreach ($D["city"] as $name => $city) {
+					$D["city"][$name]["dist"] = gpsdist($lat, $long, $city["lat"], $city["long"]);
+				}
+				function cmp($a, $b) {
+					return ($a["dist"] < $b["dist"]) ? -1 : 1;
+				}
+				$msg .= "離您最近的測站有\n";
+				uasort($D["city"], 'cmp');
+				WriteLog(json_encode($D["city"]));
+				$city = reset($D["city"]);
+				for ($i=0; $i < $C["GPSlist"]; $i++) {
+					$msg .= $city["name"]." ".round($city["long"], 3)."°E ".round($city["lat"], 3)."°N ";
+					if ($city["dist"] < 1000) {
+						$msg .= round($city["dist"], 0)."m\n";
+					} else if ($city["dist"] < 10000) {
+						$msg .= round($city["dist"]/1000, 1)."km\n";
+					} else {
+						$msg .= round($city["dist"]/1000, 0)."km\n";
 					}
+					$city = next($D["city"]);
 				}
-				$msg .= "離您最近的測站是 ".$closest["city"]."\n".
-					"測站座標是經度".round($closest["long"], 3)." 緯度".round($closest["lat"], 3)."\n";
-				if ($closest["length"] < 1000) {
-					$msg .= "距離是".round($closest["length"], 0)."公尺\n";
-				} else if ($closest["length"] < 100000) {
-					$msg .= "距離是".round($closest["length"]/1000, 1)."公里\n";
-				} else {
-					$msg .= "距離是".round($closest["length"]/1000, 0)."公里\n";
-				}
-				$msg .= "\n輸入 /add ".$closest["city"]." 以接收此測站通知";
+				$city = reset($D["city"]);
+				$msg .= "\n輸入 /add ".$city["name"]." 以接收此測站通知";
 				SendMessage($tmid, $msg);
 				continue;
 			}

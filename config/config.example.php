@@ -1,6 +1,7 @@
 <?php
 $C["AQIover"] = 51;
 $C["AQIdiff"] = 10;
+$C["GPSlist"] = 3;
 
 $C['FBpageid'] = 'page_id';
 $C['FBpagetoken'] = 'page_token';
