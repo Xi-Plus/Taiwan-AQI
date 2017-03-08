@@ -29,7 +29,7 @@ function MakeMessage($force=false, $tmid=null) {
 				continue;
 			}
 		}
-		$msg = $follow["city"]." 距".TimediffFormat(time()-strtotime($follow["lastmsg"]))."前";
+		$msg = $follow["city"]." 距".TimediffFormat(time()-strtotime($follow["lastmsg"]))."前AQI";
 		$diff = $D["city"][$follow["city"]]["AQI"]-$follow["lastAQI"];
 		if ($diff > 0) {
 			$msg .= "已上升".$diff."達到 ".$D["city"][$follow["city"]]["AQI"];

@@ -136,7 +136,6 @@ foreach ($row as $data) {
 							$sth->bindValue(":diff", $diff);
 							$sth->bindValue(":lastAQI", $D["city"][$city]["AQI"]);
 							$res = $sth->execute();
-							WriteLog(json_encode($res));
 							SendMessage($tmid, "已開始接收".$city."測站的通知，當AQI達到".$level."且變化達到".$diff."時會通知\n目前的AQI是 ".$D["city"][$city]["AQI"]);
 						} else {
 							$sth = $G["db"]->prepare("UPDATE `{$C['DBTBprefix']}follow` SET `level` = :level WHERE `tmid` = :tmid AND `city` = :city");
