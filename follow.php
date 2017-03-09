@@ -97,6 +97,25 @@ foreach ($row as $data) {
 				$city = reset($D["city"]);
 				for ($i=0; $i < $C["GPSlist"]; $i++) {
 					$msg .= $city["name"]." ";
+					if ($city["angle"]>157.5) {
+						$msg .= "⬇";
+					} else if ($city["angle"]>112.5) {
+						$msg .= "↘";
+					} else if ($city["angle"]>67.5) {
+						$msg .= "➡";
+					} else if ($city["angle"]>22.5) {
+						$msg .= "↗";
+					} else if ($city["angle"]>-22.5) {
+						$msg .= "⬆";
+					} else if ($city["angle"]>-67.5) {
+						$msg .= "↖";
+					} else if ($city["angle"]>-112.5) {
+						$msg .= "⬅";
+					} else if ($city["angle"]>-157.5) {
+						$msg .= "↙";
+					} else {
+						$msg .= "⬇";
+					}
 					if ($city["angle"]>135) {
 						$msg .= "南偏東".round(180-$city["angle"], 0)."° ";
 					} else if ($city["angle"]>90) {
