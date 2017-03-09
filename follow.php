@@ -86,7 +86,7 @@ foreach ($row as $data) {
 				require(__DIR__.'/function/gpsdist.php');
 				foreach ($D["city"] as $name => $city) {
 					$D["city"][$name]["dist"] = gpsdist($lat, $long, $city["lat"], $city["long"]);
-					$D["city"][$name]["angle"] = angle($lat, $long, $city["lat"], $city["long"]);
+					$D["city"][$name]["angle"] = (anglei($lat, $long, $city["lat"], $city["long"])+anglef($lat, $long, $city["lat"], $city["long"]))/2;
 				}
 				function cmp($a, $b) {
 					return ($a["dist"] < $b["dist"]) ? -1 : 1;
@@ -96,24 +96,24 @@ foreach ($row as $data) {
 				WriteLog(json_encode($D["city"]));
 				$city = reset($D["city"]);
 				for ($i=0; $i < $C["GPSlist"]; $i++) {
-					$msg .= $city["name"]." ".round($city["long"], 3)."°E ".round($city["lat"], 3)."°N\n    ";
-					if ($city["angle"]<-45) {
-						$msg .= "南偏東".round($city["angle"]+90, 0)."度 ";
-					} else if ($city["angle"]<0) {
-						$msg .= "東偏南".round(-$city["angle"], 0)."度 ";
-					} else if ($city["angle"]<45) {
-						$msg .= "東偏北".round($city["angle"], 0)."度 ";
-					} else if ($city["angle"]<90) {
-						$msg .= "北偏東".round(90-$city["angle"], 0)."度 ";
-					} else if ($city["angle"]<135) {
-						$msg .= "北偏西".round($city["angle"]-90, 0)."度 ";
-					} else if ($city["angle"]<180) {
-						$msg .= "西偏北".round(180-$city["angle"], 0)."度 ";
-					} else if ($city["angle"]<225) {
-						$msg .= "西偏南".round($city["angle"]-180, 0)."度 ";
+					$msg .= $city["name"]." ";
+					if ($city["angle"]>135) {
+						$msg .= "南偏東".round(180-$city["angle"], 0)."° ";
+					} else if ($city["angle"]>90) {
+						$msg .= "東偏南".round($city["angle"]-90, 0)."° ";
+					} else if ($city["angle"]>45) {
+						$msg .= "東偏北".round(90-$city["angle"], 0)."° ";
+					} else if ($city["angle"]>0) {
+						$msg .= "北偏東".round($city["angle"], 0)."° ";
+					} else if ($city["angle"]>-45) {
+						$msg .= "北偏西".round(-$city["angle"], 0)."° ";
+					} else if ($city["angle"]>-90) {
+						$msg .= "西偏北".round($city["angle"]+90, 0)."° ";
+					} else if ($city["angle"]>-135) {
+						$msg .= "西偏南".round(-90-$city["angle"], 0)."° ";
 					} else {
-						$msg .= "南偏西".round(270-$city["angle"], 0)."度 ";
-					} 
+						$msg .= "南偏西".round($city["angle"]+180, 0)."° ";
+					}
 					if ($city["dist"] < 1000) {
 						$msg .= round($city["dist"], 0)."m\n";
 					} else if ($city["dist"] < 10000) {
@@ -121,6 +121,7 @@ foreach ($row as $data) {
 					} else {
 						$msg .= round($city["dist"]/1000, 0)."km\n";
 					}
+					$msg .= "    ".round($city["long"], 3)."°E ".round($city["lat"], 3)."°N\n";
 					$city = next($D["city"]);
 				}
 				$city = reset($D["city"]);
