@@ -406,14 +406,63 @@ foreach ($row as $data) {
 					break;
 				
 				case '/help':
-					SendMessage($tmid, "可用命令\n".
+					if (isset($cmd[2])) {
+						$msg = "參數過多\n".
+							"必須給出一個參數為指令的名稱";
+					} else if (isset($cmd[1])) {
+						switch ($cmd[1]) {
+							case 'add':
+								$msg = "/add 顯示所有區域\n".
+									"/add [區域] 顯示此區域所有的測站\n".
+									"/add [測站] 接收測站通知\n".
+									"/add [測站] [門檻] 接收並自訂通知門檻值\n".
+									"/add [測站] [門檻] [變化] 接收並自訂通知門檻和變化值";
+								break;
+							
+							case 'level':
+								$msg = "/level [測站] [門檻] 將此測站門檻值改為自訂值\n".
+									 "/level [測站] 將此測站門檻值改為預設值{$C["AQIover"]}\n".
+									 "/level [門檻] 將所有測站門檻值改為自訂值\n";
+								break;
+							
+							case 'diff':
+								$msg = "/diff [測站] [變化] 將此測站變化值改為自訂值\n".
+									 "/diff [測站] 將此測站變化值改為預設值{$C["AQIdiff"]}\n".
+									 "/diff [變化] 將所有測站變化值改為自訂值\n";
+								break;
+							
+							case 'del':
+								$msg = "/del [測站] 停止此測站通知";
+								break;
+							
+							case 'list':
+								$msg = "/list 列出已接收通知的測站";
+								break;
+							
+							case 'show':
+								$msg = "/show 列出已接收通知測站的資料";
+								break;
+							
+							case 'help':
+								$msg = "/help 顯示所有命令";
+								break;
+							
+							default:
+								$msg = "查無此指令";
+								break;
+						}
+					} else {
+						$msg = "可用命令\n".
 						"/add 接收測站通知\n".
 						"/level 修改測站門檻值\n".
 						"/diff 修改測站變化值\n".
 						"/del 停止測站通知\n".
 						"/list 列出已接收通知的測站\n".
 						"/show 列出已接收通知測站的資料\n".
-						"/help 顯示所有命令");
+						"/help 顯示所有命令\n\n".
+						"/help [命令] 顯示命令的詳細用法";
+					}
+					SendMessage($tmid, $msg);
 					break;
 				
 				default:
