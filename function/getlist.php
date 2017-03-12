@@ -21,3 +21,16 @@ foreach ($row as $value) {
 	$D["city"][$value['name']] = $value;
 	$D["citylist"][$D["area"][$value['area']]['name']][] = $value['name'];
 }
+
+function getuserlist($tmid) {
+	global $C, $G;
+	$sth = $G["db"]->prepare("SELECT * FROM `{$C['DBTBprefix']}follow` WHERE `tmid` = :tmid");
+	$sth->bindValue(":tmid", $tmid);
+	$res = $sth->execute();
+	$row = $sth->fetchAll(PDO::FETCH_ASSOC);
+	$data = array();
+	foreach ($row as $temp) {
+		$data[$temp["city"]] = $temp;
+	}
+	return $data;
+}

@@ -149,7 +149,7 @@ foreach ($row as $data) {
 				continue;
 			}
 			if (!isset($messaging['message']['text'])) {
-				SendMessage($tmid, $M["nottext"]);
+				SendMessage($tmid, "僅接受文字訊息");
 				continue;
 			}
 			$msg = $messaging['message']['text'];
@@ -193,12 +193,8 @@ foreach ($row as $data) {
 					if (in_array($city, $D["arealist"])) {
 						SendMessage($tmid, $M["/add_citylist"]."\n\n可用的測站有：".implode("、", $D["citylist"][$city])."\n\n範例: /add ".$D["citylist"][$city][0]);
 					} else if (isset($D["city"][$city])) {
-						$sth = $G["db"]->prepare("SELECT * FROM `{$C['DBTBprefix']}follow` WHERE `tmid` = :tmid AND `city` = :city LIMIT 1");
-						$sth->bindValue(":tmid", $tmid);
-						$sth->bindValue(":city", $city);
-						$res = $sth->execute();
-						$row = $sth->fetch(PDO::FETCH_ASSOC);
-						if ($row === false) {
+						$user = getuserlist($tmid);
+						if (!isset($user[$city])) {
 							$sth = $G["db"]->prepare("INSERT INTO `{$C['DBTBprefix']}follow` (`tmid`, `city`, `level`, `diff`, `lastAQI`) VALUES (:tmid, :city, :level, :diff, :lastAQI)");
 							$sth->bindValue(":tmid", $tmid);
 							$sth->bindValue(":city", $city);
@@ -208,12 +204,9 @@ foreach ($row as $data) {
 							$res = $sth->execute();
 							SendMessage($tmid, "已開始接收".$city."測站的通知，當AQI達到".$level."且變化達到".$diff."時會通知\n目前的AQI是 ".$D["city"][$city]["AQI"]);
 						} else {
-							$sth = $G["db"]->prepare("UPDATE `{$C['DBTBprefix']}follow` SET `level` = :level WHERE `tmid` = :tmid AND `city` = :city");
-							$sth->bindValue(":tmid", $tmid);
-							$sth->bindValue(":city", $city);
-							$sth->bindValue(":level", $level);
-							$res = $sth->execute();
-							SendMessage($tmid, "已經".$city."測站的通知的門檻值改成".$level);
+							SendMessage($tmid, $city." 測站已經接收過了\n".
+								"要修改請使用 /level 和 /diff\n".
+								"要刪除請使用 /del");
 						}
 					} else {
 						$msg = $M["/add_notfound"]."\n".
@@ -221,6 +214,63 @@ foreach ($row as $data) {
 							"可用的區域有：".implode("、", $D["arealist"])."\n\n".
 							"範例： /add ".$D["arealist"][0];
 						SendMessage($tmid, $msg);
+					}
+					break;
+
+				case '/level':
+					if (!isset($cmd[1])) {
+						SendMessage($tmid, "參數不足\n".
+							"必須給出一個或兩個參數");
+						break;
+					}
+					if (isset($cmd[3])) {
+						SendMessage($tmid, "參數過多\n".
+							"必須給出一個或兩個參數");
+						break;
+					}
+					if (isset($cmd[2])) {
+						if (preg_match("/^\d+$/", $cmd[2]) == 0) {
+							SendMessage($tmid, "第2個參數錯誤\n".
+								"門檻值必須是一個整數");
+							continue;
+						}
+						$city = $cmd[1];
+						$level = (int)$cmd[2];
+					} else {
+						if (preg_match("/^\d+$/", $cmd[1]) == 0) {
+							$city = $cmd[1];
+							$level = $C["AQIover"];
+						} else {
+							$city = false;
+							$level = (int)$cmd[1];
+						}
+					}
+					if ($city !== false) {
+						if (!isset($D["city"][$city])) {
+							SendMessage($tmid, "找不到測站");
+							continue;
+						}
+						$user = getuserlist($tmid);
+						if (!isset($user[$city])) {
+							SendMessage($tmid, "您沒有接收此測站通知");
+							continue;
+						}
+						$sth = $G["db"]->prepare("UPDATE `{$C['DBTBprefix']}follow` SET `level` = :level WHERE `tmid` = :tmid AND `city` = :city");
+						$sth->bindValue(":city", $city);
+					} else {
+						$sth = $G["db"]->prepare("UPDATE `{$C['DBTBprefix']}follow` SET `level` = :level WHERE `tmid` = :tmid");
+					}
+					$sth->bindValue(":tmid", $tmid);
+					$sth->bindValue(":level", $level);
+					$res = $sth->execute();
+					if ($res === false) {
+						SendMessage($tmid, "指令錯誤");
+						continue;
+					}
+					if ($city === false) {
+						SendMessage($tmid, "已將所有測站的通知的門檻值改成 ".$level);
+					} else {
+						SendMessage($tmid, "已將 ".$city." 測站的通知的門檻值改成 ".$level);
 					}
 					break;
 				
