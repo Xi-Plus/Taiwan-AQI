@@ -386,7 +386,7 @@ foreach ($row as $data) {
 					} else {
 						$msg = "已接收以下測站"."\n";
 						foreach ($row as $follow) {
-							$msg .= $follow["city"]." ".$follow["level"]."\n";
+							$msg .= $follow["city"]." 門檻".$follow["level"]." 變化".$follow["diff"]."\n";
 						}
 						$msg .= "\n".
 							"/level 修改門檻值\n".
