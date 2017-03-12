@@ -96,7 +96,8 @@ foreach ($row as $data) {
 				WriteLog(json_encode($D["city"]));
 				$city = reset($D["city"]);
 				for ($i=0; $i < $C["GPSlist"]; $i++) {
-					$msg .= $city["name"]." ";
+					$msg .= $city["name"]." 目前AQI ".$city["AQI"]."\n".
+						"    ";
 					if ($city["angle"]>157.5) {
 						$msg .= "⬇";
 					} else if ($city["angle"]>112.5) {
