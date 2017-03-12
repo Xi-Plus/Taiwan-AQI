@@ -154,7 +154,10 @@ foreach ($row as $data) {
 			}
 			$msg = $messaging['message']['text'];
 			if ($msg[0] !== "/") {
-				SendMessage($tmid, $M["notcommand"]);
+				SendMessage($tmid, "無法辨識的訊息\n".
+					"本粉專由機器人自動運作\n".
+					"啟用訊息通知輸入 /add\n".
+					"顯示所有命令輸入 /help");
 				continue;
 			}
 			$msg = str_replace("\n", " ", $msg);
@@ -163,7 +166,7 @@ foreach ($row as $data) {
 			switch ($cmd[0]) {
 				case '/add':
 					if (!isset($cmd[1])) {
-						$msg = $M["/add_arealist"]."\n\n".
+						$msg = "輸入 /add [區域] 顯示此區域所有的測站"."\n\n".
 							"可用的區域有：".implode("、", $D["arealist"])."\n\n".
 							"範例： /add ".$D["arealist"][0];
 						SendMessage($tmid, $msg);
@@ -173,7 +176,8 @@ foreach ($row as $data) {
 					$level = $C["AQIover"];
 					if (isset($cmd[2])) {
 						if (!ctype_digit($cmd[2])) {
-							SendMessage($tmid, $M["/add_level_notnum"]);
+							SendMessage($tmid, "第2個參數錯誤\n".
+								"必須是一個整數");
 							break;
 						}
 						$level = (int)$cmd[2];
@@ -181,17 +185,21 @@ foreach ($row as $data) {
 					$diff = $C["AQIdiff"];
 					if (isset($cmd[3])) {
 						if (!ctype_digit($cmd[3])) {
-							SendMessage($tmid, $M["/add_diff_notnum"]);
+							SendMessage($tmid, "第3個參數錯誤\n".
+								"必須是一個整數");
 							break;
 						}
 						$diff = (int)$cmd[3];
 					}
 					if (isset($cmd[4])) {
-						SendMessage($tmid, $M["/add_too_many_arg"]);
+						SendMessage($tmid, "參數個數錯誤\n".
+							"必須提供1個或2個參數，第1個為測站，第2個為AQI指數");
 						break;
 					}
 					if (in_array($city, $D["arealist"])) {
-						SendMessage($tmid, $M["/add_citylist"]."\n\n可用的測站有：".implode("、", $D["citylist"][$city])."\n\n範例: /add ".$D["citylist"][$city][0]);
+						SendMessage($tmid, "輸入 /add [測站] 接收此測站通知\n".
+							"可用的測站有：".implode("、", $D["citylist"][$city])."\n\n".
+							"範例: /add ".$D["citylist"][$city][0]);
 					} else if (isset($D["city"][$city])) {
 						$user = getuserlist($tmid);
 						if (!isset($user[$city])) {
@@ -209,8 +217,8 @@ foreach ($row as $data) {
 								"要刪除請使用 /del");
 						}
 					} else {
-						$msg = $M["/add_notfound"]."\n".
-							$M["/add_arealist"]."\n\n".
+						$msg = "找不到此區域或測站"."\n".
+							"輸入 /add [區域] 顯示此區域所有的測站"."\n\n".
 							"可用的區域有：".implode("、", $D["arealist"])."\n\n".
 							"範例： /add ".$D["arealist"][0];
 						SendMessage($tmid, $msg);
@@ -341,9 +349,10 @@ foreach ($row as $data) {
 						$follow []= $temp["city"];
 					}
 					if (!isset($cmd[1])) {
-						$msg = $M["/del"]."\n\n";
+						$msg = "輸入 /del [測站] 取消接收此測站通知"."\n\n";
 						if (count($follow) == 0) {
-							$msg .= $M["/list_zero"];
+							$msg .= "沒有接收任何測站\n".
+								"輸入 /add [測站] 開始接收測站通知";
 						} else {
 							$msg .= "接收的測站有：".implode("、", $follow)."\n\n".
 								"範例： /del ".$follow[0];
@@ -359,9 +368,9 @@ foreach ($row as $data) {
 						$sth->bindValue(":tmid", $tmid);
 						$sth->bindValue(":city", $city);
 						$res = $sth->execute();
-						SendMessage($tmid, "已停止接收".$city."測站的通知");
+						SendMessage($tmid, "已停止接收 ".$city." 測站的通知");
 					} else {
-						SendMessage($tmid, "並沒有接收".$city."測站的通知");
+						SendMessage($tmid, "並沒有接收 ".$city." 測站的通知");
 					}
 					break;
 
@@ -372,16 +381,17 @@ foreach ($row as $data) {
 					$row = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 					if (count($row) == 0) {
-						SendMessage($tmid, $M["/list_zero"]);
+						SendMessage($tmid, "沒有接收任何測站\n".
+							"輸入 /add [測站] 開始接收測站通知");
 					} else {
-						$msg = $M["/list"]."\n";
+						$msg = "已接收以下測站"."\n";
 						foreach ($row as $follow) {
 							$msg .= $follow["city"]." ".$follow["level"]."\n";
 						}
-						$msg .= "\n".$M["/list_add_update"]."\n".
-							"範例： /add ".$row[0]["city"]." ".($row[0]["level"]+10)."\n".
-							$M["/del"]."\n".
-							"範例： /del ".$row[0]["city"];
+						$msg .= "\n".
+							"/level 修改門檻值\n".
+							"/diff 修改變化值\n".
+							"/del 停止測站通知";
 						SendMessage($tmid, $msg);
 					}
 					break;
@@ -390,16 +400,25 @@ foreach ($row as $data) {
 					require(__DIR__.'/function/level.php');
 					require(__DIR__.'/function/makemessage.php');
 					if (!makemessage(true, $tmid)) {
-						SendMessage($tmid, $M["/list_zero"]);
+						SendMessage($tmid, "沒有接收任何測站\n".
+							"輸入 /add [測站] 開始接收測站通知");
 					}
 					break;
 				
 				case '/help':
-					SendMessage($tmid, $M["/help"]);
+					SendMessage($tmid, "可用命令\n".
+						"/add 接收測站通知\n".
+						"/level 修改測站門檻值\n".
+						"/diff 修改測站變化值\n".
+						"/del 停止測站通知\n".
+						"/list 列出已接收通知的測站\n".
+						"/show 列出已接收通知測站的資料\n".
+						"/help 顯示所有命令");
 					break;
 				
 				default:
-					SendMessage($tmid, $M["wrongcommand"]);
+					SendMessage($tmid, "無法辨識命令\n".
+						"輸入 /help 取得可用命令");
 					break;
 			}
 		}
