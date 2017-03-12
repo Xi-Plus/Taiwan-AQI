@@ -273,6 +273,63 @@ foreach ($row as $data) {
 						SendMessage($tmid, "已將 ".$city." 測站的通知的門檻值改成 ".$level);
 					}
 					break;
+
+				case '/diff':
+					if (!isset($cmd[1])) {
+						SendMessage($tmid, "參數不足\n".
+							"必須給出一個或兩個參數");
+						break;
+					}
+					if (isset($cmd[3])) {
+						SendMessage($tmid, "參數過多\n".
+							"必須給出一個或兩個參數");
+						break;
+					}
+					if (isset($cmd[2])) {
+						if (preg_match("/^\d+$/", $cmd[2]) == 0) {
+							SendMessage($tmid, "第2個參數錯誤\n".
+								"變化值必須是一個整數");
+							continue;
+						}
+						$city = $cmd[1];
+						$level = (int)$cmd[2];
+					} else {
+						if (preg_match("/^\d+$/", $cmd[1]) == 0) {
+							$city = $cmd[1];
+							$level = $C["AQIdiff"];
+						} else {
+							$city = false;
+							$level = (int)$cmd[1];
+						}
+					}
+					if ($city !== false) {
+						if (!isset($D["city"][$city])) {
+							SendMessage($tmid, "找不到測站");
+							continue;
+						}
+						$user = getuserlist($tmid);
+						if (!isset($user[$city])) {
+							SendMessage($tmid, "您沒有接收此測站通知");
+							continue;
+						}
+						$sth = $G["db"]->prepare("UPDATE `{$C['DBTBprefix']}follow` SET `diff` = :diff WHERE `tmid` = :tmid AND `city` = :city");
+						$sth->bindValue(":city", $city);
+					} else {
+						$sth = $G["db"]->prepare("UPDATE `{$C['DBTBprefix']}follow` SET `diff` = :diff WHERE `tmid` = :tmid");
+					}
+					$sth->bindValue(":tmid", $tmid);
+					$sth->bindValue(":diff", $level);
+					$res = $sth->execute();
+					if ($res === false) {
+						SendMessage($tmid, "指令錯誤");
+						continue;
+					}
+					if ($city === false) {
+						SendMessage($tmid, "已將所有測站的通知的變化值改成 ".$level);
+					} else {
+						SendMessage($tmid, "已將 ".$city." 測站的通知的變化值改成 ".$level);
+					}
+					break;
 				
 				case '/del':
 					$sth = $G["db"]->prepare("SELECT * FROM `{$C['DBTBprefix']}follow` WHERE `tmid` = :tmid");
