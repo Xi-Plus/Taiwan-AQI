@@ -81,7 +81,6 @@ foreach ($row as $data) {
 			if (isset($messaging['message']['attachments']) && $messaging['message']['attachments'][0]['type'] == "location") {
 				$lat = $messaging['message']['attachments'][0]['payload']['coordinates']['lat'];
 				$long = $messaging['message']['attachments'][0]['payload']['coordinates']['long'];
-				$msg = "您的座標是".round(abs($long), 3)."°".($long>=0?"E":"W")." ".round(abs($lat), 3)."°".($lat>=0?"N":"S")."\n";
 				$closest = array("length"=>1e100, "lat"=>0, "long"=>0, "city"=>"");
 				require(__DIR__.'/function/gpsdist.php');
 				foreach ($D["city"] as $name => $city) {
@@ -91,9 +90,8 @@ foreach ($row as $data) {
 				function cmp($a, $b) {
 					return ($a["dist"] < $b["dist"]) ? -1 : 1;
 				}
-				$msg .= "離您最近的測站有\n";
+				$msg = "離您最近的測站有\n";
 				uasort($D["city"], 'cmp');
-				WriteLog(json_encode($D["city"]));
 				$city = reset($D["city"]);
 				for ($i=0; $i < $C["GPSlist"]; $i++) {
 					$msg .= $city["name"]." 目前AQI ".$city["AQI"]."\n".
@@ -141,11 +139,9 @@ foreach ($row as $data) {
 					} else {
 						$msg .= round($city["dist"]/1000, 0)."km\n";
 					}
-					$msg .= "    ".round($city["long"], 3)."°E ".round($city["lat"], 3)."°N\n";
 					$city = next($D["city"]);
 				}
-				$city = reset($D["city"]);
-				$msg .= "\n輸入 /add ".$city["name"]." 以接收此測站通知";
+				$msg .= "\n輸入 /add 接收測站通知";
 				SendMessage($tmid, $msg);
 				continue;
 			}
