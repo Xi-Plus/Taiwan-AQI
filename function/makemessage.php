@@ -40,10 +40,10 @@ function MakeMessage($force=false, $tmid=null) {
 		}
 		$msg .= "\n指標為".AQIlevel($D["city"][$follow["city"]]["AQI"]);
 		if ($D["city"][$follow["city"]]["AQI"] < $follow["level"]) {
-			$msg .= "\n已低於門檻值，直到超過門檻值才會再次通知";
+			$msg .= "\n已低於門檻值，暫停通知直到超過門檻值";
 		}
 		if ($follow["lastAQI"] < $follow["level"]) {
-			$msg .= "\n已超過門檻值，已啟動再次通知";
+			$msg .= "\n已超過門檻值，繼續通知";
 		}
 		$sth = $G["db"]->prepare("UPDATE `{$C['DBTBprefix']}follow` SET `lastAQI`=:lastAQI, `lastmsg`=:lastmsg WHERE `tmid` = :tmid AND `city` = :city");
 		$sth->bindValue(":lastAQI", $D["city"][$follow["city"]]["AQI"]);
