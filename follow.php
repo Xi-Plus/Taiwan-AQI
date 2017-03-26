@@ -57,24 +57,29 @@ foreach ($row as $data) {
 	$input = json_decode($data["input"], true);
 	foreach ($input['entry'] as $entry) {
 		foreach ($entry['messaging'] as $messaging) {
-			$mmid = "m_".$messaging['message']['mid'];
-			$res = cURL($C['FBAPI'].$mmid."?fields=from&access_token=".$C['FBpagetoken']);
-			$res = json_decode($res, true);
-			$uid = $res["from"]["id"];
-
-			$sth = $G["db"]->prepare("SELECT * FROM `{$C['DBTBprefix']}user` WHERE `uid` = :uid");
-			$sth->bindValue(":uid", $uid);
+			$sid = $messaging['sender']['id'];
+			$sth = $G["db"]->prepare("SELECT * FROM `{$C['DBTBprefix']}user` WHERE `sid` = :sid");
+			$sth->bindValue(":sid", $sid);
 			$sth->execute();
 			$row = $sth->fetch(PDO::FETCH_ASSOC);
 			if ($row === false) {
 				GetTmid();
+				$mmid = "m_".$messaging['message']['mid'];
+				$res = cURL($C['FBAPI'].$mmid."?fields=from&access_token=".$C['FBpagetoken']);
+				$res = json_decode($res, true);
+				$uid = $res["from"]["id"];
+				$sthsid = $G["db"]->prepare("UPDATE `{$C['DBTBprefix']}user` SET `sid` = :sid WHERE `uid` = :uid");
+				$sthsid->bindValue(":sid", $sid);
+				$sthsid->bindValue(":uid", $uid);
+				$sthsid->execute();
+
 				$sth->execute();
 				$row = $sth->fetch(PDO::FETCH_ASSOC);
 				if ($row === false) {
-					WriteLog("[follow][error][uid404] uid=".$uid);
+					WriteLog("[follow][error][uid404] sid=".$sid." uid=".$uid);
 					continue;
 				} else {
-					WriteLog("[follow][info][newuser] uid=".$uid);
+					WriteLog("[follow][info][newuser] sid=".$sid." uid=".$uid);
 				}
 			}
 			$tmid = $row["tmid"];

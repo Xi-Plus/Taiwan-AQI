@@ -53,6 +53,7 @@ CREATE TABLE `taiwan_aqi_log` (
 CREATE TABLE `taiwan_aqi_user` (
   `uid` varchar(25) NOT NULL,
   `tmid` varchar(50) NOT NULL,
+  `sid` varchar(255) NOT NULL DEFAULT '',
   `name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
