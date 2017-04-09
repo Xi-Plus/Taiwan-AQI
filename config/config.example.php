@@ -16,6 +16,8 @@ $C['DBTBprefix'] = 'taiwan_aqi_';
 
 $C['fetch'] = 'http://taqm.epa.gov.tw/taqm/tw/Aqi/Yun-Chia-Nan.aspx?type=all';
 
+$C['LogKeep'] = 86400*7;
+
 $C["allowsapi"] = array("cli");
 
 $G["db"] = new PDO ('mysql:host='.$C["DBhost"].';dbname='.$C["DBname"].';charset=utf8', $C["DBuser"], $C["DBpass"]);
