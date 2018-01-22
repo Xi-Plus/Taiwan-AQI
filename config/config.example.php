@@ -1,5 +1,5 @@
 <?php
-$C["AQIover"] = 51;
+$C["AQIover"] = 101;
 $C["AQIdiff"] = 10;
 $C["GPSlist"] = 3;
 
