@@ -392,9 +392,9 @@ foreach ($row as $data) {
 					break;
 				
 				case 'show':
-					require(__DIR__.'/functionlevel.php');
+					require(__DIR__.'/function/level.php');
 					require(__DIR__.'/function/makemessage.php');
-					if (!makemessage(true, $tmid)) {
+					if (!MakeMessage(true, $tmid)) {
 						SendMessage($tmid, "沒有接收任何測站\n".
 							"輸入 add [測站] 開始接收測站通知");
 					}
